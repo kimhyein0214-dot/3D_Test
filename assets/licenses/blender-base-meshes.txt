@@ -9,7 +9,6 @@ The bundle's internal README states:
 
 Used mesh / author (asset collection metadata):
 GEO-head_sculpting_realistic / Head (Sculpting) - Realistic / Dan Ulrich
-GEO-head_stylized / Head - Stylized / Julien Kaspar
 
 Only the right external ear surfaces and a small attachment area were used.
 No unrelated rig asset was used. See ASSET_SOURCES.md for all modifications.

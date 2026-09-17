@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { earModels } from './ear-models.js';
+import { earModels } from './ear-models.js?v=20260917-ear2';
 
 const viewport=document.querySelector('#viewport'),canvas=document.querySelector('#stage');
 const loading=document.querySelector('#loading'),fallback=document.querySelector('#fallback');
@@ -73,15 +73,11 @@ function attachPiercing(){
  document.querySelector('#productName').textContent=names[product];render();
 }
 function animate(){frameId=requestAnimationFrame(animate);if(controls.update())render();}
-function markSelectedEar(id){
- document.querySelectorAll('[data-ear]').forEach(button=>{const active=button.dataset.ear===id;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
-}
 async function loadEar(id){
  const model=earModels.find(item=>item.id===id);
  if(!model)return;
  const token=++loadToken;requestedModel=model;
  loading.textContent=model.label+' 불러오는 중…';loading.hidden=false;fallback.hidden=true;
- markSelectedEar(id);
  try{
   if(!modelCache.has(id)){
    const task=loader.loadAsync(model.path,event=>{
@@ -99,19 +95,8 @@ async function loadEar(id){
   attachPiercing();fitCamera();loading.hidden=true;controls.enabled=true;
  }catch(error){
   if(token!==loadToken)return;
-  markSelectedEar(currentModel?.id);
   showError(model.label+' 로딩에 실패했습니다. 연결 상태를 확인한 뒤 다시 시도해 주세요.');
   console.warn('Ear model load fallback:',error.message);
- }
-}
-function buildModelUI(){
- const list=document.querySelector('#earList');list.replaceChildren();
- for(const model of earModels){
-  const button=document.createElement('button');button.className='ear-card';button.dataset.ear=model.id;button.setAttribute('aria-pressed','false');
-  const img=document.createElement('img');img.src=model.thumbnail;img.alt='';img.width=46;img.height=58;
-  const text=document.createElement('span'),label=document.createElement('b'),description=document.createElement('small');
-  label.textContent=model.label;description.textContent=model.description;text.append(label,description);button.append(img,text);
-  button.addEventListener('click',()=>loadEar(model.id));list.append(button);
  }
 }
 async function loadEnvironment(){
@@ -121,7 +106,7 @@ async function loadEnvironment(){
   const pmrem=new THREE.PMREMGenerator(renderer);
   environmentTarget=pmrem.fromEquirectangular(hdriTexture);pmrem.dispose();
   scene.environment=environmentTarget.texture;scene.environmentIntensity=.9;
-  scene.background=hdriTexture;scene.backgroundBlurriness=.65;scene.backgroundIntensity=.85;
+  scene.background=hdriTexture;scene.backgroundBlurriness=.15;scene.backgroundIntensity=.85;
   renderer.toneMappingExposure=.85;fillLight.intensity=.55;keyLight.intensity=.8;
   render();
  }catch(error){
@@ -140,7 +125,7 @@ try{
  controls.minPolarAngle=Math.PI*.28;controls.maxPolarAngle=Math.PI*.7;
  controls.minAzimuthAngle=-.95;controls.maxAzimuthAngle=.95;controls.addEventListener('change',render);
  resizeObserver=new ResizeObserver(resize);resizeObserver.observe(viewport);
- resize();buildModelUI();loadEar('ear-01');animate();loadEnvironment();
+ resize();loadEar('ear-02');animate();loadEnvironment();
  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(frameId);showError('그래픽 연결이 중단되었습니다. 다시 시도해 주세요.');});
 }catch(error){showError('이 기기에서 3D 화면을 시작하지 못했습니다. WebGL을 지원하는 최신 브라우저에서 다시 시도해 주세요.');console.error(error);}
 document.querySelectorAll('[data-place]').forEach(button=>button.addEventListener('click',()=>{

@@ -1,6 +1,12 @@
 # Viewer QA — 2026-09-17
 
-## Local HTTP browser verification
+## Current revision: single Ear 02 / simplified UI
+
+Ear 01/03 are removed from the current deployment. Their tests below are historical results for the original three-ear revision, not current UI controls. Current behavior uses only Ear 02, four location chips and front/reset controls; visible branding and model choice UI are removed. Pretendard 1.3.9 Regular/SemiBold webfonts are self-hosted, and HDR background blur is reduced from 0.65 to 0.15 without changing lighting.
+
+Current checks: desktop 1180×720 / mobile 390×844; font loading, four locations, reset, iframe rendering, no document horizontal overflow. Physical device GPU testing and MakeShop admin save verification remain outstanding.
+
+## Historical local HTTP browser verification (three-ear revision)
 
 Environment: isolated Chromium browser on Windows, HTTP server at `http://127.0.0.1:8765/`. Mobile sizes and native touch input are emulated; this is not a physical iPhone/Android GPU benchmark.
 
@@ -28,7 +34,7 @@ Environment: isolated Chromium browser on Windows, HTTP server at `http://127.0.
 
 ## Remaining production checks
 
-- These are sample ear meshes, not a calibrated anatomical measurement system. Ear 01 retains a scan attachment edge; Ear 03 is intentionally stylized with shallower detail.
+- The remaining Ear 02 is a sample mesh, not a calibrated anatomical measurement system.
 - Test on physical iPhone/Android hardware before production rollout; desktop emulation cannot establish actual mobile GPU performance or device thermal behavior.
 - MakeShop admin save/iframe sanitization and the actual commercial product page require the responsible operator's access. The simulator is not proof of a successful MakeShop admin save.
 - Real product GLB orientation, dimensions and per-ear attachment need calibration when replacing `makePiercing()` in `viewer.js`.

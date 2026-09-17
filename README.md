@@ -1,6 +1,6 @@
 # Pink Rocket 3D 피어싱 뷰어
 
-메이크샵 상품 상세페이지에 iframe으로 넣는 단일 상품 착용 미리보기입니다. 세 가지 귀 모델과 네 착용 위치를 제공하며 장바구니·제품 조합 기능은 없습니다.
+메이크샵 상품 상세페이지에 iframe으로 넣는 단일 상품 착용 미리보기입니다. 귀 모델 02 하나와 네 착용 위치를 제공하며 장바구니·제품 조합 기능은 없습니다. 사용하지 않는 귀 모델 01/03과 썸네일은 현재 배포에서 제거했습니다.
 
 ## 공개 주소
 
@@ -27,17 +27,17 @@
 - 데스크톱 최대 1180×720, 290px 컨트롤 + 나머지 3D 뷰포트. 768px 이하에서는 뷰포트 → 컨트롤 순서입니다.
 - 모바일 뷰포트 `clamp(430px,55svh,540px)`, 버튼 최소 42px. 720px 높이 iframe에서 컨트롤을 사용할 수 있도록 간격을 압축했습니다.
 - ResizeObserver, 부모 기준 렌더 크기, DPR 최대 2, Box3 정규화/카메라 fit, OrbitControls 회전·제한 확대/축소·초기화.
-- Photo Studio 01 1K HDR 환경 반사 + 배경 블러 0.65, ACES/sRGB. HDR 실패 시 웜그레이 배경과 기본 조명으로 표시합니다.
-- 첫 귀만 초기 로딩하며 다른 귀는 선택할 때 로딩하고 캐시합니다. 로딩 실패와 WebGL 실패는 화면에 안내합니다.
+- Photo Studio 01 1K HDR 환경 반사 + 배경 블러 **0.15** (기존 0.65에서 감소), ACES/sRGB. 물체의 재질이나 조명 선명도는 변경하지 않았습니다. HDR 실패 시 웜그레이 배경과 기본 조명으로 표시합니다.
+- 귀 모델 02만 로딩합니다. 불필요한 귀 선택 영역과 화면의 PINK ROCKET/TRY-ON 표기는 제거했습니다. 로딩 실패와 WebGL 실패는 화면에 안내합니다.
+- **Pretendard 1.3.9** 고딕 웹폰트 Regular/SemiBold를 프로젝트에 저장했습니다. SIL OFL 1.1 라이선스는 `assets/fonts/OFL.txt`에 포함했습니다.
 - `canvas`만 `touch-action:none`입니다. 바깥 상세페이지 스크롤을 잠그지 않습니다.
 - 기존 테스트 피어싱 4종은 접힌 테스트 메뉴 및 `?product=spark|mini|cubic|pearl`로 유지합니다. 한 번에 한 제품만 표시합니다.
 
 ## 에셋 출처 / Attribution
 
-- **Ear 01:** adapted from [Ear by Artec Group inc.](https://www.artec3d.com/3d-models/ear), [CC BY 3.0 Unported](https://creativecommons.org/licenses/by/3.0/) as supplied in its archive. Cropped, mirrored, normalized, neutral material, decimated and converted to GLB. Current asset page separately links CC BY 4.0; original license text is preserved. No endorsement implied.
 - **Ear 02:** right ear extracted from Head (Sculpting) - Realistic by **Dan Ulrich**.
-- **Ear 03:** right ear extracted from Head - Stylized by **Julien Kaspar**.
-- Ear 02/03 are distinct meshes from the official [Human Base Meshes v1.4.1 bundle](https://www.blender.org/download/demo-files/#assets), **CC0**. They are not simple scale variants.
+- Ear 02 is from the official [Human Base Meshes v1.4.1 bundle](https://www.blender.org/download/demo-files/#assets), **CC0**.
+- [Pretendard](https://github.com/orioncactus/pretendard), **Kil Hyung-jin**, **SIL OFL 1.1**. Unmodified Regular/SemiBold webfont subsets.
 - [Photo Studio 01](https://polyhaven.com/a/photo_studio_01), **Sergej Majboroda**, **CC0**. Local 1K HDR: 1,597,273 bytes.
 
 Detailed sources, license evidence, dates, modifications and file sizes: [ASSET_SOURCES.md](./ASSET_SOURCES.md).
