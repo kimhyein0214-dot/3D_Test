@@ -1,0 +1,15 @@
+Human Base Meshes v1.4.1
+Official source: https://www.blender.org/download/demo-files/#assets
+Project description: https://studio.blender.org/training/stylized-character-workflow/base-meshes/
+License: CC0 1.0 https://creativecommons.org/publicdomain/zero/1.0/
+Downloaded: 2026-09-17
+
+The bundle's internal README states:
+"All provided assets are public domain under CC0 license."
+
+Used mesh / author (asset collection metadata):
+GEO-head_sculpting_realistic / Head (Sculpting) - Realistic / Dan Ulrich
+GEO-head_stylized / Head - Stylized / Julien Kaspar
+
+Only the right external ear surfaces and a small attachment area were used.
+No unrelated rig asset was used. See ASSET_SOURCES.md for all modifications.

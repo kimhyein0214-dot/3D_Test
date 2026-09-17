@@ -25,7 +25,8 @@ h2 span{color:var(--ink);font-size:12px;font-weight:700;margin-left:8px}
 .view-actions{display:grid;grid-template-columns:1fr 1.4fr;gap:7px}
 .selection{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:16px;font-size:12px}
 .selection span:last-child{color:var(--muted);font-size:11px}
-.demo-products{font-size:10px;margin-top:18px;color:var(--muted)}
+.utility{display:flex;align-items:start;justify-content:space-between;gap:10px;margin-top:18px}.utility a{font-size:10px;color:var(--muted);white-space:nowrap;padding:5px 0}
+.demo-products{font-size:10px;color:var(--muted)}
 .demo-products summary{cursor:pointer;padding:5px 0}
 .demo-products select{width:100%;min-height:42px;margin-top:6px;border:1px solid var(--line);background:#fff;border-radius:4px;padding:8px;font-size:12px}
 .viewport{grid-area:viewport;position:relative;min-width:0;min-height:0;background:var(--warm);overflow:hidden}
@@ -50,7 +51,7 @@ h2 span{color:var(--ink);font-size:12px;font-weight:700;margin-left:8px}
  .ear-card b{font-size:10px}.ear-card small{font-size:8px;margin-top:3px}
  .chips{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.chips button,.view-actions button{font-size:11px}
  .selection{flex-direction:row;align-items:center;justify-content:space-between;padding-top:9px;gap:8px;font-size:10px}.selection span:last-child{font-size:9px}
- .demo-products{margin-top:7px}.demo-products summary{padding:3px 0}
+ .utility{margin-top:7px}.utility a{font-size:9px;padding:3px 0}.demo-products summary{padding:3px 0}
  .viewport-label{left:14px;top:15px;font-size:9px}.hint{font-size:9px;bottom:12px}
 }
 @media(prefers-reduced-motion:reduce){button{transition:none}}

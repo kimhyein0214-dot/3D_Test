@@ -37,8 +37,8 @@
     button:hover { background: #f7f5f3; }
     button.active { border-color: var(--accent); background: var(--accent); color: #fff; }
     .sizes { display: flex; gap: 6px; }
-    .stage-shell { overflow: auto; padding: 24px; border: 1px solid var(--line); border-radius: 16px; background: #e7e1dc; }
-    .device { width: 100%; max-width: 1180px; height: 720px; margin: 0 auto; overflow: hidden; border: 1px solid #cbc5c0; border-radius: 12px; background: #fff; box-shadow: 0 18px 50px rgba(42, 35, 29, .12); transition: width .2s ease; }
+    .stage-shell { overflow: hidden; padding: 24px; border: 1px solid var(--line); border-radius: 5px; background: #e7e1dc; }
+    .device { width: 100%; max-width: min(1180px,100%); height: 720px; margin: 0 auto; overflow: hidden; border: 0; border-radius: 0; background: #fff; transition: width .2s ease; }
     .device iframe { display: block; width: 100%; height: 100%; border: 0; background: #f3efeb; }
     .code-card { margin-top: 14px; padding: 18px; }
     .code-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
@@ -51,7 +51,7 @@
       .toolbar { grid-template-columns: 1fr; }
       .sizes { overflow-x: auto; }
       .stage-shell { padding: 10px; }
-      .device { height: 680px; }
+      .device { height: 720px; }
     }
   </style>
 </head>
@@ -111,7 +111,8 @@
       }
 
       function updateCode() {
-        var src = safeUrl().replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+        var publicUrl = safeUrl() === './index.html' ? 'https://kimhyein0214-dot.github.io/3D_Test/' : safeUrl();
+        var src = publicUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
         code.textContent = '<div style="width:100%;max-width:1180px;margin:0 auto;">\n' +
           '  <iframe src="' + src + '"\n' +
           '    title="Pink Rocket 3D 피어싱 뷰어"\n' +
@@ -148,7 +149,7 @@
           var button = document.getElementById('copyCode');
           button.textContent = '복사됨';
           setTimeout(function () { button.textContent = '코드 복사'; }, 1200);
-        });
+        }).catch(function () { document.getElementById('copyCode').textContent = '아래 코드를 직접 복사해 주세요'; });
       });
 
       urlInput.addEventListener('input', updateCode);
