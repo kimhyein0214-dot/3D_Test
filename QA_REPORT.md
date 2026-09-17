@@ -1,6 +1,17 @@
 # Viewer QA — 2026-09-17
 
-## Current revision: natural sky / bar-type CZ stud
+## Current update: HDRI adjustment / frontal default camera
+
+- The initial/default camera changed from direction (0.35,0.1,1) to the mesh's calibrated +Z front (0,0,1). Initial fit, resize, front button, reset and product close-up share the same frontal basis. Drag rotation remains available.
+- The viewport's collapsible Background/Lighting panel offers relative HDRI yaw 0–360° and background blur 0–100%, 0.5% steps. Defaults: 0° / 2.5% (scene.backgroundBlurriness 0.025). Rotation updates environment/background together without moving the ear camera; blur does not change skin/metal/CZ material.
+- Native mouse slider drag, Home/End/arrow keys, numeric outputs, Escape dismissal and independent environment/camera reset passed in local HTTP Chromium. A non-default rotation/blur survives camera reset. First view/reset/front/close-up have normalized camera direction approximately (0,0,1).
+- At 390×844 / 336px-wide 720px simulator iframe: native touch slider drags passed; controls bottom remains 713px. No outer/inner horizontal overflow. Desktop 1180×720, mobile first view, conch/tragus frontal close-up were visually inspected.
+- All five product thumbnails × four placements (20 states) still pass native click/selection/actual attachment checks in the iframe.
+- Injected HDR request failure leaves the ear/piercing usable with fallback lighting, disables HDR sliders and provides visible notice/status. The route was removed and normal loading restored.
+- The first zero-blur render adds one cached background texture (5 → 6); repeated adjustment checks then remain at 25 geometries / 6 textures, without further growth in these short tests. No PMREM regeneration or additional asset download is needed per slider movement.
+- Physical mobile GPU performance remains unverified; mobile input and size checks use desktop Chromium emulation. Public deployment is checked after push and reported with the commit SHA.
+
+## Earlier natural sky / bar-type CZ stud revision
 
 ### Thumbnail catalog update — 2026-09-17
 

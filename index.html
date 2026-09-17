@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#f3f0ec">
 <title>3D 피어싱 착용 미리보기</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="./viewer.css?v=20260917-catalog">
+<link rel="stylesheet" href="./viewer.css?v=20260917-environment">
 <script type="importmap">{"imports":{"three":"./assets/vendor/three/build/three.module.js","three/addons/":"./assets/vendor/three/addons/"}}</script>
 </head>
 <body>
@@ -34,13 +34,27 @@
 </aside>
 <section class="viewport" id="viewport" aria-label="3D 귀와 피어싱 미리보기">
 <canvas id="stage" aria-label="드래그로 회전하고 휠 또는 두 손가락으로 확대하는 3D 뷰어"></canvas>
+<div class="environment-ui">
+<button id="environmentToggle" class="environment-toggle" type="button" aria-expanded="false" aria-controls="environmentPanel">배경 / 조명</button>
+<section id="environmentPanel" class="environment-panel" aria-label="HDRI 배경과 조명 조절" hidden>
+<fieldset id="environmentSettings" disabled>
+<legend class="sr-only">HDRI 조절</legend>
+<label for="hdriRotation">HDRI 회전 <output id="rotationValue" for="hdriRotation">0°</output></label>
+<input id="hdriRotation" type="range" min="0" max="360" step="1" value="0">
+<label for="hdriBlur">배경 블러 <output id="blurValue" for="hdriBlur">2.5%</output></label>
+<input id="hdriBlur" type="range" min="0" max="100" step="0.5" value="2.5">
+<button id="resetEnvironment" type="button">배경 초기화</button>
+</fieldset>
+<p id="environmentStatus" role="status">자연광 불러오는 중…</p>
+</section>
+</div>
 <div class="loading" id="loading" role="status">뷰어 준비 중…</div>
 <div class="fallback" id="fallback" role="alert" hidden><p id="errorMessage">3D 뷰어를 불러오지 못했습니다.</p><button id="retry">다시 시도</button></div>
 <p class="hint">드래그하여 회전 <span>·</span> 휠 / 두 손가락으로 확대</p>
 <div class="notice" id="notice" role="status" hidden></div>
 </section>
 </main>
-<script type="module" src="./viewer.js?v=20260917-catalog"></script>
+<script type="module" src="./viewer.js?v=20260917-environment"></script>
 <script>window.addEventListener('error',function(e){if(e.target?.tagName==='SCRIPT'){document.getElementById('loading').hidden=true;document.getElementById('fallback').hidden=false;document.getElementById('errorMessage').textContent='뷰어 파일을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.';document.getElementById('retry').onclick=function(){location.reload()}}},true);</script>
 </body>
 </html>

@@ -16,7 +16,30 @@ let environmentTarget,hdriTexture,keyLight,fillLight;
 let currentModel,requestedModel,loadToken=0;
 const modelCache=new Map(),loader=new GLTFLoader();
 const debug=new URLSearchParams(location.search).get('debug')==='anchors';
-const defaultDirection=new THREE.Vector3(.35,.1,1).normalize();
+// The mesh is calibrated with its outer ear facing +Z: no default yaw/pitch.
+const defaultDirection=new THREE.Vector3(0,0,1);
+const environmentDefaults={rotation:0,blur:2.5};
+const environmentValues={...environmentDefaults};
+const environmentButton=document.querySelector('#environmentToggle'),environmentPanel=document.querySelector('#environmentPanel');
+function applyEnvironmentSettings(){
+ if(!scene?.environment)return;
+ const yaw=.9+THREE.MathUtils.degToRad(environmentValues.rotation);
+ scene.environmentRotation.set(0,yaw,0);
+ // Only the sky framing is pitched; the environment keeps its natural horizon.
+ scene.backgroundRotation.set(-.55,yaw,0);
+ scene.backgroundBlurriness=environmentValues.blur/100;render();
+}
+function setEnvironmentPanel(open){
+ environmentPanel.hidden=!open;environmentButton.setAttribute('aria-expanded',String(open));
+}
+function updateEnvironmentControls(){
+ document.querySelector('#hdriRotation').value=environmentValues.rotation;
+ document.querySelector('#hdriBlur').value=environmentValues.blur;
+ document.querySelector('#rotationValue').value=environmentValues.rotation+'°';
+ document.querySelector('#blurValue').value=environmentValues.blur+'%';
+ document.querySelector('#hdriRotation').setAttribute('aria-valuetext',environmentValues.rotation+'도');
+ document.querySelector('#hdriBlur').setAttribute('aria-valuetext',environmentValues.blur+'퍼센트');
+}
 function showError(message){loading.hidden=true;fallback.hidden=false;document.querySelector('#errorMessage').textContent=message;}
 function disposeObject(object){
  const geometries=new Set(),materials=new Set(),textures=new Set();
@@ -37,7 +60,7 @@ function normalizeModel(object){
  const wrapper=new THREE.Group();wrapper.add(object);wrapper.scale.setScalar(scale);return wrapper;
 }
 function render(){if(renderer)renderer.render(scene,camera);}
-function fitCamera(front=false){
+function fitCamera(){
  closeup=false;document.querySelector('#focusProduct').setAttribute('aria-pressed','false');
  // Drain residual OrbitControls damping before replacing the camera pose.
  // Otherwise a reset immediately after dragging keeps drifting away.
@@ -45,7 +68,7 @@ function fitCamera(front=false){
  const bounds=new THREE.Box3().setFromObject(ear),size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3());
  const fov=THREE.MathUtils.degToRad(camera.fov);
  fitDistance=Math.max(size.y/(2*Math.tan(fov/2)),size.x/(2*Math.tan(fov/2)*camera.aspect))*1.24;
- camera.position.copy(center).addScaledVector(front?new THREE.Vector3(0,0,1):defaultDirection,fitDistance);
+ camera.position.copy(center).addScaledVector(defaultDirection,fitDistance);
  camera.near=.01;camera.far=fitDistance*12;camera.updateProjectionMatrix();
  controls.target.copy(center);controls.minDistance=fitDistance*.68;controls.maxDistance=fitDistance*1.65;
  controls.update();controls.saveState();controls.enableDamping=damping;render();
@@ -109,13 +132,13 @@ async function loadEnvironment(){
   const pmrem=new THREE.PMREMGenerator(renderer);
   environmentTarget=pmrem.fromEquirectangular(hdriTexture);pmrem.dispose();
   scene.environment=environmentTarget.texture;scene.environmentIntensity=1;
-  scene.environmentRotation.y=.9;
-  scene.background=hdriTexture;scene.backgroundBlurriness=.025;scene.backgroundIntensity=.9;
-  scene.backgroundRotation.set(-.55,.9,0);
+  scene.background=hdriTexture;scene.backgroundIntensity=.9;
   renderer.toneMappingExposure=.9;fillLight.intensity=.35;keyLight.intensity=.35;
-  render();
+  applyEnvironmentSettings();document.querySelector('#environmentSettings').disabled=false;
+  document.querySelector('#environmentStatus').textContent='조명과 하늘을 함께 회전합니다. 블러는 배경에만 적용됩니다.';
  }catch(error){
   const notice=document.querySelector('#notice');notice.textContent='자연광 조명을 불러오지 못해 기본 조명으로 표시합니다.';notice.hidden=false;
+  document.querySelector('#environmentStatus').textContent='기본 조명 표시 중: HDRI 조절을 사용할 수 없습니다.';
   console.warn('HDRI fallback:',error.message);
  }
 }
@@ -155,11 +178,24 @@ function updateProductSelection(){
 }
 updateProductSelection();
 document.querySelector('#resetView').addEventListener('click',()=>{if(ear)fitCamera();});
-document.querySelector('#frontView').addEventListener('click',()=>{if(ear)fitCamera(true);});
+document.querySelector('#frontView').addEventListener('click',()=>{if(ear)fitCamera();});
 document.querySelector('#focusProduct').addEventListener('click',()=>{if(ear)focusPiercing();});
 document.querySelector('#retry').addEventListener('click',()=>{
  if(renderer&&scene&&requestedModel&&!renderer.getContext().isContextLost())loadEar(requestedModel.id);else location.reload();
 });
+environmentButton.addEventListener('click',()=>setEnvironmentPanel(environmentPanel.hidden));
+document.querySelector('.environment-ui').addEventListener('keydown',event=>{
+ if(event.key==='Escape'){setEnvironmentPanel(false);environmentButton.focus();}
+});
+for(const [id,key] of [['hdriRotation','rotation'],['hdriBlur','blur']]){
+ document.querySelector('#'+id).addEventListener('input',event=>{
+  environmentValues[key]=Number(event.target.value);updateEnvironmentControls();applyEnvironmentSettings();
+ });
+}
+document.querySelector('#resetEnvironment').addEventListener('click',()=>{
+ Object.assign(environmentValues,environmentDefaults);updateEnvironmentControls();applyEnvironmentSettings();
+});
+updateEnvironmentControls();
 function sampleAnchor(x,y){
  if(!ear)return null;
  const rect=canvas.getBoundingClientRect(),pointer=new THREE.Vector2((x-rect.left)/rect.width*2-1,-(y-rect.top)/rect.height*2+1);
@@ -179,6 +215,8 @@ Object.defineProperty(window,'__viewerState',{get:()=>({
  model:currentModel?.id,requested:requestedModel?.id,place,product,closeup,loading:!loading.hidden,error:!fallback.hidden,
  attachedProduct:piercing?.userData.productId,attachedCount:ear?.children.filter(node=>node.userData.productId).length||0,
  cache:[...modelCache.keys()],hdri:Boolean(scene?.environment),camera:camera?.position.toArray(),
+ target:controls?.target.toArray(),viewDirection:camera&&controls?camera.position.clone().sub(controls.target).normalize().toArray():null,
+ environment:{...environmentValues,yaw:scene?.environmentRotation.y,backgroundYaw:scene?.backgroundRotation.y,enabled:!document.querySelector('#environmentSettings').disabled},
  bounds:ear?new THREE.Box3().setFromObject(ear).getSize(new THREE.Vector3()).toArray():null,
  memory:renderer?.info.memory,heap:performance.memory?.usedJSHeapSize
  ,dpr:renderer?.getPixelRatio(),backgroundBlur:scene?.backgroundBlurriness,exposure:renderer?.toneMappingExposure,

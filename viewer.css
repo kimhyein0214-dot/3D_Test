@@ -29,6 +29,18 @@ h2 span{color:var(--ink);font-size:12px;font-weight:600;margin-left:8px}
 .utility{display:flex;align-items:start;justify-content:space-between;gap:10px;margin-top:18px;font-size:10px;color:var(--muted)}.utility a{font-size:10px;color:var(--muted);white-space:nowrap;padding:5px 0}.utility span{padding:5px 0}
 .viewport{grid-area:viewport;position:relative;min-width:0;min-height:0;background:var(--warm);overflow:hidden}
 #stage{display:block;width:100%;height:100%;touch-action:none}
+.environment-ui{position:absolute;top:12px;right:12px;width:min(232px,calc(100% - 24px));display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.environment-toggle{padding:8px 14px;font-size:11px;background:#fffffff2;border-color:#ffffff80}
+.environment-panel{width:100%;padding:12px;background:#fffffff5;border:1px solid var(--line);border-radius:5px}
+.environment-panel fieldset{margin:0;padding:0;border:0;min-width:0}
+.environment-panel label{display:flex;justify-content:space-between;gap:8px;font-size:11px;line-height:16px}
+.environment-panel output{color:var(--muted);font-variant-numeric:tabular-nums}
+.environment-panel input{display:block;width:100%;height:42px;margin:0;accent-color:#65594b;cursor:pointer}
+.environment-panel input:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.environment-panel button{width:100%;margin-top:5px;font-size:11px}
+.environment-panel fieldset:disabled{opacity:.55}
+.environment-panel p{margin:8px 0 0;font-size:10px;line-height:15px;color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 .hint{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);white-space:nowrap;text-align:center;font-size:10px;color:#423f3c;background:#ffffffc9;padding:6px 10px;margin:0;pointer-events:none}
 .hint span{padding:0 6px}
 .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#70675f;background:#f3f0ecaa;pointer-events:none}
