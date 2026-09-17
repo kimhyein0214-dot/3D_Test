@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>메이크샵 3D 뷰어 iframe 삽입 테스트</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23222222'/%3E%3Cpath d='M18 32h28M32 18v28' stroke='%23f3efeb' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1f1d1b;
+      --muted: #756f69;
+      --line: #ded9d4;
+      --panel: #ffffff;
+      --bg: #f3efeb;
+      --accent: #222222;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, "Malgun Gothic", sans-serif;
+    }
+    button, input { font: inherit; }
+    .page { width: min(1440px, 100%); margin: 0 auto; padding: 28px; }
+    .head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+    h1 { margin: 0 0 7px; font-size: clamp(22px, 3vw, 34px); letter-spacing: -.04em; }
+    .lead { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .status { flex: none; border: 1px solid #c9dfcb; border-radius: 999px; padding: 8px 12px; background: #eef8ef; color: #286532; font-size: 12px; }
+    .toolbar, .code-card { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+    .toolbar { display: grid; grid-template-columns: minmax(240px, 1fr) auto; gap: 12px; padding: 12px; margin-bottom: 14px; }
+    .url-row { display: flex; gap: 8px; min-width: 0; }
+    input { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; color: var(--ink); background: #fff; }
+    button { border: 1px solid var(--line); border-radius: 9px; padding: 10px 13px; color: var(--ink); background: #fff; cursor: pointer; white-space: nowrap; }
+    button:hover { background: #f7f5f3; }
+    button.active { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .sizes { display: flex; gap: 6px; }
+    .stage-shell { overflow: auto; padding: 24px; border: 1px solid var(--line); border-radius: 16px; background: #e7e1dc; }
+    .device { width: 100%; max-width: 1180px; height: 720px; margin: 0 auto; overflow: hidden; border: 1px solid #cbc5c0; border-radius: 12px; background: #fff; box-shadow: 0 18px 50px rgba(42, 35, 29, .12); transition: width .2s ease; }
+    .device iframe { display: block; width: 100%; height: 100%; border: 0; background: #f3efeb; }
+    .code-card { margin-top: 14px; padding: 18px; }
+    .code-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+    h2 { margin: 0; font-size: 15px; }
+    pre { margin: 0; overflow: auto; border-radius: 10px; padding: 15px; background: #201f1e; color: #f8f4ef; font: 12px/1.65 Consolas, monospace; white-space: pre-wrap; word-break: break-all; }
+    .note { margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    @media (max-width: 800px) {
+      .page { padding: 16px; }
+      .head { align-items: start; flex-direction: column; }
+      .toolbar { grid-template-columns: 1fr; }
+      .sizes { overflow-x: auto; }
+      .stage-shell { padding: 10px; }
+      .device { height: 680px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="head">
+      <div>
+        <h1>메이크샵 iframe 삽입 시뮬레이터</h1>
+        <p class="lead">현재 폴더의 피어싱 뷰어를 실제 iframe으로 불러옵니다. 화면 폭을 바꿔 상세페이지 안에서의 표시 상태를 확인하세요.</p>
+      </div>
+      <div class="status" id="loadStatus">● iframe 로드 확인 중</div>
+    </header>
+
+    <section class="toolbar" aria-label="시뮬레이터 설정">
+      <div class="url-row">
+        <input id="viewerUrl" value="./index.html" aria-label="뷰어 URL">
+        <button id="applyUrl" type="button">주소 적용</button>
+      </div>
+      <div class="sizes" aria-label="미리보기 폭">
+        <button class="size active" type="button" data-width="100%">PC 100%</button>
+        <button class="size" type="button" data-width="768px">태블릿 768</button>
+        <button class="size" type="button" data-width="390px">모바일 390</button>
+      </div>
+    </section>
+
+    <section class="stage-shell">
+      <div class="device" id="device">
+        <iframe
+          id="viewerFrame"
+          src="./index.html"
+          title="Pink Rocket 3D 피어싱 뷰어"
+          loading="eager"
+          allowfullscreen></iframe>
+      </div>
+    </section>
+
+    <section class="code-card">
+      <div class="code-head">
+        <h2>메이크샵 상품 상세 HTML에 넣을 코드</h2>
+        <button id="copyCode" type="button">코드 복사</button>
+      </div>
+      <pre id="embedCode"></pre>
+      <p class="note">실제 삽입 때는 위 주소를 공개 HTTPS 주소로 바꿔야 합니다. 메이크샵 편집기가 iframe 태그를 제거하는지, 저장 후에도 표시되는지가 핵심 확인 항목입니다.</p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var urlInput = document.getElementById('viewerUrl');
+      var iframe = document.getElementById('viewerFrame');
+      var device = document.getElementById('device');
+      var code = document.getElementById('embedCode');
+      var status = document.getElementById('loadStatus');
+
+      function safeUrl() {
+        return (urlInput.value || '').trim() || './index.html';
+      }
+
+      function updateCode() {
+        var src = safeUrl().replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+        code.textContent = '<div style="width:100%;max-width:1180px;margin:0 auto;">\n' +
+          '  <iframe src="' + src + '"\n' +
+          '    title="Pink Rocket 3D 피어싱 뷰어"\n' +
+          '    loading="lazy" allowfullscreen\n' +
+          '    style="display:block;width:100%;height:720px;border:0;overflow:hidden;">\n' +
+          '  </iframe>\n' +
+          '</div>';
+      }
+
+      document.getElementById('applyUrl').addEventListener('click', function () {
+        status.textContent = '● iframe 로드 확인 중';
+        status.style.color = '#8a651e';
+        status.style.background = '#fff8e7';
+        iframe.src = safeUrl();
+        updateCode();
+      });
+
+      iframe.addEventListener('load', function () {
+        status.textContent = '● iframe 로드 완료';
+        status.style.color = '#286532';
+        status.style.background = '#eef8ef';
+      });
+
+      document.querySelectorAll('.size').forEach(function (button) {
+        button.addEventListener('click', function () {
+          document.querySelectorAll('.size').forEach(function (item) { item.classList.remove('active'); });
+          button.classList.add('active');
+          device.style.width = button.getAttribute('data-width');
+        });
+      });
+
+      document.getElementById('copyCode').addEventListener('click', function () {
+        navigator.clipboard.writeText(code.textContent).then(function () {
+          var button = document.getElementById('copyCode');
+          button.textContent = '복사됨';
+          setTimeout(function () { button.textContent = '코드 복사'; }, 1200);
+        });
+      });
+
+      urlInput.addEventListener('input', updateCode);
+      updateCode();
+    })();
+  </script>
+</body>
+</html>
