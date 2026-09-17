@@ -35,6 +35,9 @@
 - 큐빅은 MeshPhysicalMaterial의 transmission 1 / IOR 2.15 / roughness 0.03 / dispersion 0.06을 사용합니다. 불투명도만 낮춘 표현이 아니라 투과·굴절·환경 반사입니다. 실시간 raster 재질이므로 실사 보석의 내부 다중 반사/caustics를 완전히 재현하지는 않습니다. 진주 재질은 불투명하게 유지합니다.
 - **제품 확대**로 보석과 세팅을 가까이 확인하고 정면/보기 초기화로 귀 전체 화면을 복구합니다. 확대 중 위치/제품 전환과 resize에도 해당 제품을 다시 중심에 맞춥니다.
 - 제품 선택 및 `?product=stud|spark|mini|cubic|pearl`로 기존 링 4종도 유지합니다. 한 번에 한 제품만 표시합니다. 바형 제품은 링과 구분한 네 위치의 local anchor를 사용합니다.
+- 드롭다운 대신 **실제 3D 형상에서 렌더링한 상품 썸네일 카드**를 클릭해 착용합니다. PC 2열 그리드 / 모바일 5개 한 줄 목록이며 선택한 상품에는 테두리와 체크 표시가 있습니다. 상품 교체 시 착용 부위와 제품 확대 상태를 유지합니다. 키보드 Tab + Enter/Space로도 선택할 수 있습니다.
+- `piercing-products.js`의 `products`가 상품 ID·이름·썸네일·anchor 종류를 관리하고 `createPiercing(id)`가 해당 테스트 3D 형상을 생성합니다. 썸네일은 256×256 PNG 5개, 합계 184,851 bytes입니다. 페이지에서 썸네일용 WebGL 렌더러를 추가 실행하지 않습니다.
+- 현재는 **카탈로그형 선택 UI + 한 상품 전환**까지입니다. 여러 피어싱 동시 배치·조합 편집·삭제·장바구니는 아직 구현하지 않았습니다.
 
 ## 에셋 출처 / Attribution
 
@@ -56,7 +59,7 @@ Open `http://127.0.0.1:8765/` or `/simulator.html`. Do not test with `file://`.
 
 ## 다음 단계: 실제 상품 GLB
 
-`viewer.js`의 `makePiercing()`이 현재 테스트 피어싱을 생성하는 연결 지점입니다. 이 함수를 상품별 GLTFLoader + 로딩/캐시 처리로 교체하고 `attachPiercing()`의 모델별 local anchor 부착 구조를 유지하세요. 상품 원점·방향·실측 scale을 먼저 정규화한 뒤 anchor를 재보정해야 합니다. `ear-models.js`는 네 위치의 모델별 position/rotation 또는 quaternion/scale을 관리합니다.
+`piercing-products.js`의 `products`가 카탈로그 연결 지점이고 `createPiercing(id)`가 현재 테스트 피어싱 생성 지점입니다. 실제 상품을 연결할 때 이 부분을 상품별 GLTFLoader + 로딩/캐시 처리로 교체하고 `viewer.js`의 `attachPiercing()` local anchor 구조를 유지하세요. 상품 원점·방향·실측 scale을 먼저 정규화한 뒤 anchor를 재보정해야 합니다. `ear-models.js`는 네 위치의 모델별 position/rotation 또는 quaternion/scale을 관리합니다.
 
 개발용 `?debug=anchors`에서 Shift+클릭으로 표면 좌표를 콘솔에 확인할 수 있으며 일반 UI에는 좌표가 표시되지 않습니다. `ear-models.js`의 `anchors`는 링, `studAnchors`는 바형 큐빅용으로 분리되어 있습니다.
 

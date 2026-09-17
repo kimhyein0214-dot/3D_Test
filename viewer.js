@@ -3,13 +3,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { earModels } from './ear-models.js?v=20260917-sky-stud';
+import { products,createPiercing } from './piercing-products.js?v=20260917-catalog';
 
 const viewport=document.querySelector('#viewport'),canvas=document.querySelector('#stage');
 const loading=document.querySelector('#loading'),fallback=document.querySelector('#fallback');
-const names={stud:'바형 큐빅 피어싱',spark:'듀오 스파크 링',mini:'미니 원터치 링',cubic:'큐빅 링',pearl:'진주 링'};
+const names=Object.fromEntries(products.map(item=>[item.id,item.name]));
 const placeNames={lobe:'귓볼',helix:'헬릭스',conch:'이너컨츠',tragus:'트라거스'};
 const requestedProduct=new URLSearchParams(location.search).get('product');
-let product=names[requestedProduct]?requestedProduct:'stud',place='lobe',closeup=false;
+let product=products.some(item=>item.id===requestedProduct)?requestedProduct:'stud',place='lobe',closeup=false;
 let renderer,scene,camera,controls,ear,piercing,resizeObserver,frameId=0,fitDistance=6;
 let environmentTarget,hdriTexture,keyLight,fillLight;
 let currentModel,requestedModel,loadToken=0;
@@ -65,69 +66,9 @@ function resize(){
  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.setSize(width,height,false);
  camera.aspect=width/height;camera.updateProjectionMatrix();if(ear){const focused=closeup;fitCamera();if(focused)focusPiercing();}render();
 }
-function makeGemMaterial(){
- // Transmission is a physical refraction pass, not an opacity fade.
- return new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:.03,
-  transmission:1,thickness:.16,ior:2.15,dispersion:.06,
-  attenuationColor:0xf4faff,attenuationDistance:3.5,
-  clearcoat:.5,clearcoatRoughness:.015,envMapIntensity:1.25});
-}
-function brilliantGeometry(){
- const vertices=[],segments=16;
- const ring=(radius,z,offset=0,count=segments)=>Array.from({length:count},(_,i)=>{
-  const a=i*Math.PI*2/count+offset;return [Math.cos(a)*radius,Math.sin(a)*radius,z];
- });
- const table=ring(.064,.105,0,8),star=ring(.094,.076,Math.PI/8,8);
- const crown=ring(.12,.04),girdle=ring(.12,.025),pavilion=ring(.055,-.055,Math.PI/8,8);
- const triangle=(a,b,c)=>vertices.push(...a,...b,...c);
- for(let i=0;i<8;i++){
-  const n=(i+1)%8,j=i*2,next=(j+2)%16;
-  triangle([0,0,.105],table[i],table[n]);
-  triangle(table[i],star[i],table[n]);
-  triangle(crown[j],star[i],table[i]);triangle(star[i],crown[next],table[n]);
-  triangle(crown[j],crown[j+1],star[i]);triangle(crown[j+1],crown[next],star[i]);
-  triangle(pavilion[i],girdle[j+1],girdle[j]);
-  triangle(pavilion[i],girdle[next],girdle[j+1]);
-  triangle(pavilion[i],pavilion[n],girdle[next]);
-  triangle([0,0,-.085],pavilion[n],pavilion[i]);
- }
- for(let i=0;i<segments;i++){
-  const n=(i+1)%segments;
-  triangle(girdle[i],girdle[n],crown[n]);triangle(girdle[i],crown[n],crown[i]);
- }
- const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
- geometry.computeVertexNormals();return geometry;
-}
-function makePiercing(){
- const group=new THREE.Group();
- if(product==='stud'){
-  const silver=new THREE.MeshPhysicalMaterial({color:0xe7e9ed,metalness:1,roughness:.16,clearcoat:.2});
-  const post=new THREE.Mesh(new THREE.CylinderGeometry(.024,.024,.32,12),silver);
-  post.rotation.x=Math.PI/2;post.position.z=-.155;group.add(post);
-  const back=new THREE.Mesh(new THREE.SphereGeometry(.052,16,12),silver);back.position.z=-.31;group.add(back);
-  const basket=new THREE.Mesh(new THREE.TorusGeometry(.103,.012,8,32),silver);basket.position.z=.014;group.add(basket);
-  for(let i=0;i<4;i++){
-   const angle=Math.PI/4+i*Math.PI/2;
-   const prong=new THREE.Mesh(new THREE.CylinderGeometry(.011,.013,.09,8),silver);
-   prong.rotation.x=Math.PI/2;prong.position.set(Math.cos(angle)*.106,Math.sin(angle)*.106,.035);group.add(prong);
-   const tip=new THREE.Mesh(new THREE.SphereGeometry(.014,8,6),silver);
-   tip.position.set(Math.cos(angle)*.106,Math.sin(angle)*.106,.082);group.add(tip);
-  }
-  group.add(new THREE.Mesh(brilliantGeometry(),makeGemMaterial()));return group;
- }
- const gold=new THREE.MeshPhysicalMaterial({color:0xd6ae63,metalness:1,roughness:.22});
- group.add(new THREE.Mesh(new THREE.TorusGeometry(.145,.022,12,64),gold));
- const gemMaterial=makeGemMaterial();
- const gem=(x,y,r)=>{const m=new THREE.Mesh(new THREE.OctahedronGeometry(r),gemMaterial);m.position.set(x,y,.022);group.add(m);};
- if(product==='spark'){gem(-.1,.1,.038);gem(.1,-.1,.032);}
- if(product==='cubic')for(let i=0;i<8;i++){const a=i*Math.PI/4;gem(Math.cos(a)*.145,Math.sin(a)*.145,.021);}
- if(product==='pearl'){const pearlMaterial=new THREE.MeshPhysicalMaterial({color:0xf4eee3,metalness:0,roughness:.22,clearcoat:1});const m=new THREE.Mesh(new THREE.SphereGeometry(.05,20,16),pearlMaterial);m.position.set(.12,0,.03);group.add(m);}
- if(product==='mini'||product==='pearl')gemMaterial.dispose();
- return group;
-}
 function attachPiercing(){
- if(piercing){piercing.parent?.remove(piercing);disposeObject(piercing);}piercing=makePiercing();
- const anchor=(product==='stud'?currentModel.studAnchors:currentModel.anchors)[place];piercing.position.fromArray(anchor.position);
+ if(piercing){piercing.parent?.remove(piercing);disposeObject(piercing);}piercing=createPiercing(product);
+ const anchor=currentModel[products.find(item=>item.id===product).anchorType][place];piercing.position.fromArray(anchor.position);
  if(anchor.quaternion)piercing.quaternion.fromArray(anchor.quaternion);
  else piercing.rotation.fromArray([...anchor.rotation,'XYZ']);
  piercing.scale.setScalar(anchor.scale);ear.add(piercing);
@@ -196,8 +137,23 @@ try{
 document.querySelectorAll('[data-place]').forEach(button=>button.addEventListener('click',()=>{
  place=button.dataset.place;document.querySelectorAll('[data-place]').forEach(item=>{const active=item===button;item.classList.toggle('active',active);item.setAttribute('aria-pressed',String(active));});if(ear)attachPiercing();
 }));
-document.querySelector('#productSelect').value=product;
-document.querySelector('#productSelect').addEventListener('change',event=>{product=event.target.value;if(ear)attachPiercing();});
+const productList=document.querySelector('#productList');
+for(const item of products){
+ const button=document.createElement('button');button.type='button';button.className='product-card';button.dataset.product=item.id;
+ button.setAttribute('aria-label',item.name+' 착용하기');button.title=item.name;
+ const thumbnail=document.createElement('img');thumbnail.src=item.thumbnail;thumbnail.alt='';thumbnail.width=256;thumbnail.height=256;thumbnail.decoding='async';
+ const label=document.createElement('span');label.className='product-label';label.textContent=item.label;
+ const check=document.createElement('span');check.className='product-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
+ button.append(thumbnail,label,check);productList.append(button);
+ button.addEventListener('click',()=>{product=item.id;updateProductSelection();if(ear)attachPiercing();});
+}
+function updateProductSelection(){
+ productList.querySelectorAll('[data-product]').forEach(button=>{
+  const active=button.dataset.product===product;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));
+ });
+ document.querySelector('#productName').textContent=names[product];
+}
+updateProductSelection();
 document.querySelector('#resetView').addEventListener('click',()=>{if(ear)fitCamera();});
 document.querySelector('#frontView').addEventListener('click',()=>{if(ear)fitCamera(true);});
 document.querySelector('#focusProduct').addEventListener('click',()=>{if(ear)focusPiercing();});
@@ -221,6 +177,7 @@ if(debug)canvas.addEventListener('click',event=>{
 });
 Object.defineProperty(window,'__viewerState',{get:()=>({
  model:currentModel?.id,requested:requestedModel?.id,place,product,closeup,loading:!loading.hidden,error:!fallback.hidden,
+ attachedProduct:piercing?.userData.productId,attachedCount:ear?.children.filter(node=>node.userData.productId).length||0,
  cache:[...modelCache.keys()],hdri:Boolean(scene?.environment),camera:camera?.position.toArray(),
  bounds:ear?new THREE.Box3().setFromObject(ear).getSize(new THREE.Vector3()).toArray():null,
  memory:renderer?.info.memory,heap:performance.memory?.usedJSHeapSize

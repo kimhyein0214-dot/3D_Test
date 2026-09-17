@@ -11,14 +11,19 @@ button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px soli
 button.active,button[aria-pressed="true"]{border-color:#393530;background:#f1eeea}
 button:disabled{cursor:wait;opacity:.55}
 .app{display:grid;grid-template-columns:290px minmax(0,1fr);grid-template-areas:"controls viewport";width:100%;max-width:1180px;height:720px;max-height:100svh;min-height:540px;margin:auto;background:#fff}
-.controls{grid-area:controls;min-width:0;padding:26px 22px;border-right:1px solid var(--line);overflow-y:auto}
-.control-section{margin-bottom:26px}
-h2{margin:0 0 12px;color:var(--muted);font-size:10px;font-weight:400;letter-spacing:.5px}
+.controls{grid-area:controls;min-width:0;padding:20px 18px;border-right:1px solid var(--line);overflow-y:auto}
+.control-section{margin-bottom:16px}
+h2{margin:0 0 10px;color:var(--muted);font-size:10px;font-weight:400;letter-spacing:.5px}
 h2 span{color:var(--ink);font-size:12px;font-weight:600;margin-left:8px}
 .chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .chips button,.view-actions button{font-size:12px;padding:8px 6px}
 .view-actions{display:grid;grid-template-columns:1fr 1.2fr 1.4fr;gap:5px}
-.product-select{display:block;width:100%;min-height:42px;border:1px solid var(--line);background:#fff;border-radius:5px;padding:8px 10px;font:inherit;font-size:12px}
+.product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.product-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;padding:6px;background:#fff;text-align:center}
+.product-card img{display:block;width:100%;height:64px;object-fit:contain;background:#f6f4f1}
+.product-label{display:flex;align-items:center;justify-content:center;width:100%;min-height:26px;font-size:11px;line-height:13px;word-break:keep-all}
+.product-check{position:absolute;top:9px;right:9px;display:none;width:16px;height:16px;background:#393530;color:#fff;font-size:10px;line-height:16px;border-radius:50%}
+.product-card[aria-pressed="true"] .product-check{display:block}
 .selection{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:16px;font-size:12px}
 .selection span:last-child{color:var(--muted);font-size:11px}
 .utility{display:flex;align-items:start;justify-content:space-between;gap:10px;margin-top:18px;font-size:10px;color:var(--muted)}.utility a{font-size:10px;color:var(--muted);white-space:nowrap;padding:5px 0}.utility span{padding:5px 0}
@@ -34,11 +39,14 @@ h2 span{color:var(--ink);font-size:12px;font-weight:600;margin-left:8px}
 @media(max-width:768px){
  .app{grid-template-columns:minmax(0,1fr);grid-template-areas:"viewport" "controls";height:auto;max-height:none;min-height:100svh;align-content:start}
  .viewport{height:clamp(430px,55svh,540px)}
- .controls{padding:8px 14px 6px;border-right:0;border-top:1px solid var(--line);overflow:visible}
- .control-section{margin-bottom:6px}h2{margin-bottom:4px}h2 span{font-size:11px}
+ .controls{padding:6px 14px;border-right:0;border-top:1px solid var(--line);overflow:visible}
+ .control-section{margin-bottom:4px}h2{margin-bottom:4px}h2 span{font-size:11px}
+ .product-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+ .product-card{padding:4px;gap:3px}.product-card img{height:48px}.product-label{min-height:24px;font-size:9.5px;line-height:12px}
+ .product-check{top:5px;right:5px;width:13px;height:13px;font-size:9px;line-height:13px}
  .chips{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.chips button,.view-actions button{font-size:11px}
- .selection{flex-direction:row;align-items:center;justify-content:space-between;padding-top:9px;gap:8px;font-size:10px}.selection span:last-child{font-size:9px}
- .utility{margin-top:7px;font-size:9px}.utility a{font-size:9px;padding:3px 0}.utility span{padding:3px 0}
+ .selection{flex-direction:row;align-items:center;justify-content:space-between;padding-top:5px;gap:8px;font-size:10px}.selection span:last-child{font-size:9px}
+ .utility{margin-top:3px;font-size:9px}.utility a{font-size:9px;padding:3px 0}.utility span{padding:3px 0}
  .hint{font-size:9px;bottom:12px}
 }
 @media(prefers-reduced-motion:reduce){button{transition:none}}

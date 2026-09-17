@@ -29,6 +29,8 @@ Ear 02 is already well below the budget after extraction, so unnecessary decimat
 
 HDR download: https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/qwantani_morning_puresky_1k.hdr . The actual asset detail page identifies Jarod Guest and CC0. Photo Studio 01 was replaced at the user's request and remains recoverable in Git history. Background pitch is adjusted for sky framing; the environment lighting keeps its natural vertical orientation.
 
-The bar/stud, round faceted cubic-zirconia test stone, four-prong setting and back ball are procedural example geometry defined in viewer.js, not a downloaded jewelry asset or a dimensional specification for production. Existing ring examples remain available. No third-party jewelry mesh is bundled.
+The bar/stud, round faceted cubic-zirconia test stone, four-prong setting and back ball are procedural example geometry defined in piercing-products.js, not a downloaded jewelry asset or a dimensional specification for production. Existing ring examples remain available. No third-party jewelry mesh is bundled.
+
+Product thumbnails (product-stud/spark/mini/cubic/pearl.png under assets/thumbnails/) are original 256×256 renders of these same procedural test products, not downloaded product photographs. The build-time script tools/render-product-thumbnails.mjs uses the shared createPiercing() factory and licensed sky HDRI. PNG sizes: 29,969 / 37,620 / 38,791 / 38,693 / 39,778 bytes (184,851 bytes total). No additional third-party image license is introduced.
 
 Blender bundle download: https://download.blender.org/demo/asset-bundles/human-base-meshes/human-base-meshes-bundle-v1.4.1.zip .

@@ -2,9 +2,22 @@
 
 ## Current revision: natural sky / bar-type CZ stud
 
+### Thumbnail catalog update — 2026-09-17
+
+The dropdown has been replaced by five clickable product thumbnail cards, desktop two-column grid / mobile five-card row. These are original 256px renders of the actual shared procedural geometry/materials. This is still a single-product swap, not simultaneous combination editing. Sky, Ear 02, materials and existing four placements remain unchanged.
+
+Local HTTP Chromium verification:
+
+- Desktop 1180×720 and mobile 390×844 were visually inspected. All five thumbnails load at naturalWidth 256; exactly one selected card is marked. No document horizontal overflow. Mobile controls bottom about 747px in the 844px viewport.
+- Native thumbnail clicks inside the simulator checked all five products × four wearing positions (20 states). Assertions verify selected catalog ID equals the actual attached 3D object's ID, exactly one product attached, wearing position preserved, close-up maintained, no loading/error. Reset restores full view.
+- At 336px inner width / 720px iframe height, controls bottom 713px. Outer/inner scrollWidth match their widths (390/336); no cut-off controls or horizontal overflow.
+- Tab + Enter changes from stud to spark. Existing ?product=cubic opens with matching 3D object and selected card. Invalid query IDs fall back to stud.
+- Switching through 20 states returns to 25 renderer geometries / 5 textures for the stud. Thumbnails are static PNGs, not five extra runtime WebGL contexts.
+- Normal requests have no asset 404; the current RGBELoader deprecation warning remains. Public Pages deployment is rechecked after push.
+
 Ear 01/03 are removed. Only Ear 02 is loaded. Current UI offers a default bar-type CZ stud plus the existing four ring examples, four location chips, front/product-close-up/reset controls. Visible branding/model choice UI remains removed; self-hosted Pretendard remains in use. The studio HDR was replaced with CC0 Qwantani Morning (Pure Sky), background blur 0.025, exposure 0.9. These are current results; three-ear tests below are historical, not current UI controls.
 
-Current local HTTP Chromium checks (2026-09-17):
+Natural-sky revision checks before the thumbnail catalog update (2026-09-17):
 
 - Desktop 1180×720, tablet 768×844, mobile 390×844: actual render and controls checked; document horizontal overflow absent. All visible buttons are 42px tall. Mobile controls bottom is about 720px inside the 844px viewport.
 - Stud at lobe/helix/conch/tragus: all rendered and inspected in product close-up. Separate stud local anchors are used; old ring anchors retained. This is illustrative fit, not anatomical calibration.
@@ -47,5 +60,5 @@ Environment: isolated Chromium browser on Windows, HTTP server at `http://127.0.
 - The remaining Ear 02 is a sample mesh, not a calibrated anatomical measurement system.
 - Test on physical iPhone/Android hardware before production rollout; desktop emulation cannot establish actual mobile GPU performance or device thermal behavior.
 - MakeShop admin save/iframe sanitization and the actual commercial product page require the responsible operator's access. The simulator is not proof of a successful MakeShop admin save.
-- Real product GLB orientation, dimensions and per-ear attachment need calibration when replacing `makePiercing()` in `viewer.js`.
+- Real product GLB orientation, dimensions and per-ear attachment need calibration when replacing `createPiercing()` in `piercing-products.js` and connecting the catalog to `viewer.js` attachment/loading.
 - Deployment/public URL verification is performed after push and reported separately with the deployed commit SHA.
