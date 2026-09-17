@@ -27,18 +27,21 @@
 - 데스크톱 최대 1180×720, 290px 컨트롤 + 나머지 3D 뷰포트. 768px 이하에서는 뷰포트 → 컨트롤 순서입니다.
 - 모바일 뷰포트 `clamp(430px,55svh,540px)`, 버튼 최소 42px. 720px 높이 iframe에서 컨트롤을 사용할 수 있도록 간격을 압축했습니다.
 - ResizeObserver, 부모 기준 렌더 크기, DPR 최대 2, Box3 정규화/카메라 fit, OrbitControls 회전·제한 확대/축소·초기화.
-- Photo Studio 01 1K HDR 환경 반사 + 배경 블러 **0.15** (기존 0.65에서 감소), ACES/sRGB. 물체의 재질이나 조명 선명도는 변경하지 않았습니다. HDR 실패 시 웜그레이 배경과 기본 조명으로 표시합니다.
+- Qwantani Morning (Pure Sky) 1K HDR 자연광 환경 반사 + 하늘 배경. 블러 **0.025**, ACES/sRGB, exposure 0.9. HDR 실패 시 연한 하늘색 배경과 기본 조명으로 표시합니다.
 - 귀 모델 02만 로딩합니다. 불필요한 귀 선택 영역과 화면의 PINK ROCKET/TRY-ON 표기는 제거했습니다. 로딩 실패와 WebGL 실패는 화면에 안내합니다.
 - **Pretendard 1.3.9** 고딕 웹폰트 Regular/SemiBold를 프로젝트에 저장했습니다. SIL OFL 1.1 라이선스는 `assets/fonts/OFL.txt`에 포함했습니다.
 - `canvas`만 `touch-action:none`입니다. 바깥 상세페이지 스크롤을 잠그지 않습니다.
-- 기존 테스트 피어싱 4종은 접힌 테스트 메뉴 및 `?product=spark|mini|cubic|pearl`로 유지합니다. 한 번에 한 제품만 표시합니다.
+- 기본 제품은 **바형 큐빅 피어싱**입니다. 은색 바·후면 볼·4발 세팅·라운드 커팅 CZ를 절차형 테스트 형상으로 생성합니다. 실제 판매 상품 GLB나 제작 치수는 아닙니다.
+- 큐빅은 MeshPhysicalMaterial의 transmission 1 / IOR 2.15 / roughness 0.03 / dispersion 0.06을 사용합니다. 불투명도만 낮춘 표현이 아니라 투과·굴절·환경 반사입니다. 실시간 raster 재질이므로 실사 보석의 내부 다중 반사/caustics를 완전히 재현하지는 않습니다. 진주 재질은 불투명하게 유지합니다.
+- **제품 확대**로 보석과 세팅을 가까이 확인하고 정면/보기 초기화로 귀 전체 화면을 복구합니다. 확대 중 위치/제품 전환과 resize에도 해당 제품을 다시 중심에 맞춥니다.
+- 제품 선택 및 `?product=stud|spark|mini|cubic|pearl`로 기존 링 4종도 유지합니다. 한 번에 한 제품만 표시합니다. 바형 제품은 링과 구분한 네 위치의 local anchor를 사용합니다.
 
 ## 에셋 출처 / Attribution
 
 - **Ear 02:** right ear extracted from Head (Sculpting) - Realistic by **Dan Ulrich**.
 - Ear 02 is from the official [Human Base Meshes v1.4.1 bundle](https://www.blender.org/download/demo-files/#assets), **CC0**.
 - [Pretendard](https://github.com/orioncactus/pretendard), **Kil Hyung-jin**, **SIL OFL 1.1**. Unmodified Regular/SemiBold webfont subsets.
-- [Photo Studio 01](https://polyhaven.com/a/photo_studio_01), **Sergej Majboroda**, **CC0**. Local 1K HDR: 1,597,273 bytes.
+- [Qwantani Morning (Pure Sky)](https://polyhaven.com/a/qwantani_morning_puresky), **Jarod Guest**, **CC0**. Local 1K HDR: 1,118,343 bytes.
 
 Detailed sources, license evidence, dates, modifications and file sizes: [ASSET_SOURCES.md](./ASSET_SOURCES.md).
 
@@ -55,7 +58,7 @@ Open `http://127.0.0.1:8765/` or `/simulator.html`. Do not test with `file://`.
 
 `viewer.js`의 `makePiercing()`이 현재 테스트 피어싱을 생성하는 연결 지점입니다. 이 함수를 상품별 GLTFLoader + 로딩/캐시 처리로 교체하고 `attachPiercing()`의 모델별 local anchor 부착 구조를 유지하세요. 상품 원점·방향·실측 scale을 먼저 정규화한 뒤 anchor를 재보정해야 합니다. `ear-models.js`는 네 위치의 모델별 position/rotation 또는 quaternion/scale을 관리합니다.
 
-개발용 `?debug=anchors`에서 Shift+클릭으로 표면 좌표를 콘솔에 확인할 수 있으며 일반 UI에는 좌표가 표시되지 않습니다.
+개발용 `?debug=anchors`에서 Shift+클릭으로 표면 좌표를 콘솔에 확인할 수 있으며 일반 UI에는 좌표가 표시되지 않습니다. `ear-models.js`의 `anchors`는 링, `studAnchors`는 바형 큐빅용으로 분리되어 있습니다.
 
 ## 메이크샵 담당자 적용 안내
 

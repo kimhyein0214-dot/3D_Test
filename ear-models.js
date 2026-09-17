@@ -7,5 +7,12 @@ export const earModels = [
    helix:{position:[.63,.68,.75],rotation:[0,.65,.2],scale:.75},
    conch:{position:[-.105,-.13,-.15],rotation:[0,-.35,0],scale:.65},
    tragus:{position:[-.615,-.158,.14],rotation:[0,-.55,.1],scale:.55}
+  },
+  // Stud centers sit on the skin; hoop centers hang below/around the surface.
+  studAnchors:{
+   lobe:{position:[-.185,-1.005,.45],rotation:[0,.20,.10],scale:.85},
+   helix:{position:[.598,.682,.731],rotation:[0,.65,.20],scale:.75},
+   conch:{position:[-.105,-.131,-.241],rotation:[0,-.35,0],scale:.65},
+   tragus:{position:[-.58,-.158,.12],rotation:[0,-.55,.10],scale:.55}
   }}
 ];

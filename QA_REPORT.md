@@ -1,10 +1,20 @@
 # Viewer QA — 2026-09-17
 
-## Current revision: single Ear 02 / simplified UI
+## Current revision: natural sky / bar-type CZ stud
 
-Ear 01/03 are removed from the current deployment. Their tests below are historical results for the original three-ear revision, not current UI controls. Current behavior uses only Ear 02, four location chips and front/reset controls; visible branding and model choice UI are removed. Pretendard 1.3.9 Regular/SemiBold webfonts are self-hosted, and HDR background blur is reduced from 0.65 to 0.15 without changing lighting.
+Ear 01/03 are removed. Only Ear 02 is loaded. Current UI offers a default bar-type CZ stud plus the existing four ring examples, four location chips, front/product-close-up/reset controls. Visible branding/model choice UI remains removed; self-hosted Pretendard remains in use. The studio HDR was replaced with CC0 Qwantani Morning (Pure Sky), background blur 0.025, exposure 0.9. These are current results; three-ear tests below are historical, not current UI controls.
 
-Current checks: desktop 1180×720 / mobile 390×844; font loading, four locations, reset, iframe rendering, no document horizontal overflow. Physical device GPU testing and MakeShop admin save verification remain outstanding.
+Current local HTTP Chromium checks (2026-09-17):
+
+- Desktop 1180×720, tablet 768×844, mobile 390×844: actual render and controls checked; document horizontal overflow absent. All visible buttons are 42px tall. Mobile controls bottom is about 720px inside the 844px viewport.
+- Stud at lobe/helix/conch/tragus: all rendered and inspected in product close-up. Separate stud local anchors are used; old ring anchors retained. This is illustrative fit, not anatomical calibration.
+- All five product choices load; only one product is attached at a time. Transparent CZ uses transmission 1, IOR 2.15, roughness 0.03, dispersion 0.06, opacity 1. Pearl remains opaque.
+- Native mouse wheel, touch drag and two-touch pinch change the camera within limits. Product close-up, position changes in close-up, front/reset and responsive resize work.
+- 720px simulator iframe at 336px inner width: controls bottom 686px; outer width/scrollWidth 390/390, inner 336/336. Native clicks switch all four positions, product close-up/reset; native drag and wheel work inside iframe. Initial off-screen synthetic clicks were not counted as successful; checks were repeated after scrolling the iframe into view.
+- Repeated product changes return to 25 renderer geometries / 5 textures for the stud, without monotonic resource growth in this short test. JS heap roughly 12–20MB in this desktop browser; not total browser memory or a physical mobile GPU benchmark.
+- No page errors or console errors on normal paths. Three.js 0.180.0 RGBELoader emits its existing deprecation warning recommending HDRLoader; loading succeeds.
+
+Physical device GPU testing and MakeShop admin save verification remain outstanding. Public deployment is checked after push and reported with its commit SHA.
 
 ## Historical local HTTP browser verification (three-ear revision)
 

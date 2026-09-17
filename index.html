@@ -6,14 +6,18 @@
 <meta name="theme-color" content="#f3f0ec">
 <title>3D 피어싱 착용 미리보기</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="./viewer.css?v=20260917-ear2">
+<link rel="stylesheet" href="./viewer.css?v=20260917-sky-stud">
 <script type="importmap">{"imports":{"three":"./assets/vendor/three/build/three.module.js","three/addons/":"./assets/vendor/three/addons/"}}</script>
 </head>
 <body>
 <main class="app">
 <aside class="controls" aria-label="피어싱 착용 설정">
 <section class="control-section">
-<h2>01 <span>착용 위치</span></h2>
+<h2>01 <span>피어싱</span></h2>
+<select id="productSelect" class="product-select" aria-label="피어싱 선택"><option value="stud">바형 큐빅 피어싱</option><option value="spark">듀오 스파크 링</option><option value="mini">미니 원터치 링</option><option value="cubic">큐빅 링</option><option value="pearl">진주 링</option></select>
+</section>
+<section class="control-section">
+<h2>02 <span>착용 위치</span></h2>
 <div class="chips" id="placeList">
 <button data-place="lobe" class="active" aria-pressed="true">귓볼</button>
 <button data-place="helix" aria-pressed="false">헬릭스</button>
@@ -22,11 +26,11 @@
 </div>
 </section>
 <section class="control-section">
-<h2>02 <span>각도 / 보기</span></h2>
-<div class="view-actions"><button id="frontView">정면</button><button id="resetView">보기 초기화</button></div>
+<h2>03 <span>각도 / 보기</span></h2>
+<div class="view-actions"><button id="frontView">정면</button><button id="focusProduct" aria-pressed="false">제품 확대</button><button id="resetView">보기 초기화</button></div>
 </section>
-<footer class="selection"><span id="productName">듀오 스파크 링</span><span id="selectionText" aria-live="polite">귀 모델 02 · 귓볼</span></footer>
-<div class="utility"><details class="demo-products"><summary>테스트 피어싱 변경</summary><select id="productSelect" aria-label="테스트 피어싱"><option value="spark">듀오 스파크 링</option><option value="mini">미니 원터치 링</option><option value="cubic">큐빅 링</option><option value="pearl">진주 링</option></select></details><a href="./ASSET_SOURCES.md" target="_blank" rel="noopener" title="귀 모델: CC0 / Pretendard: SIL OFL 1.1">에셋 출처</a></div>
+<footer class="selection"><span id="productName">바형 큐빅 피어싱</span><span id="selectionText" aria-live="polite">귀 모델 02 · 귓볼</span></footer>
+<div class="utility"><span>테스트용 착용 미리보기</span><a href="./ASSET_SOURCES.md" target="_blank" rel="noopener" title="귀 모델과 하늘 HDRI: CC0 / Pretendard: SIL OFL 1.1">에셋 출처</a></div>
 </aside>
 <section class="viewport" id="viewport" aria-label="3D 귀와 피어싱 미리보기">
 <canvas id="stage" aria-label="드래그로 회전하고 휠 또는 두 손가락으로 확대하는 3D 뷰어"></canvas>
@@ -36,7 +40,7 @@
 <div class="notice" id="notice" role="status" hidden></div>
 </section>
 </main>
-<script type="module" src="./viewer.js?v=20260917-ear2"></script>
+<script type="module" src="./viewer.js?v=20260917-sky-stud"></script>
 <script>window.addEventListener('error',function(e){if(e.target?.tagName==='SCRIPT'){document.getElementById('loading').hidden=true;document.getElementById('fallback').hidden=false;document.getElementById('errorMessage').textContent='뷰어 파일을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.';document.getElementById('retry').onclick=function(){location.reload()}}},true);</script>
 </body>
 </html>
