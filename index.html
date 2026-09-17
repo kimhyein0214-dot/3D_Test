@@ -3,200 +3,46 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pink Rocket 3D 피어싱 착용 스케치 V3</title>
-<style>
-html,body{margin:0;width:100%;height:100%;font-family:Arial,"Malgun Gothic",sans-serif;background:#f3efeb;color:#222}
-*{box-sizing:border-box}.app{display:flex;width:100%;height:100%}
-.side{width:280px;flex:none;background:#fff;border-right:1px solid #ddd;padding:22px}
-h1{font-size:19px;margin:0 0 8px}.desc{font-size:12px;color:#777;line-height:1.6;margin-bottom:22px}
-h3{font-size:12px;margin:17px 0 7px}
-button{display:block;width:100%;padding:10px 12px;margin:5px 0;border:1px solid #ddd;border-radius:9px;background:#fff;text-align:left;cursor:pointer;font-size:13px}
-button.active{background:#222;color:#fff;border-color:#222}
-.viewer{position:relative;flex:1;min-width:0;height:100%}
-#stage{width:100%;height:100%;display:block}
-.badge{position:absolute;top:16px;left:16px;background:#fff;padding:9px 12px;border-radius:9px;font-size:12px;z-index:3}
-.hint{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:#ffffffdd;border-radius:20px;padding:8px 14px;font-size:12px;color:#666;white-space:nowrap}
-</style>
+<meta name="theme-color" content="#f3f0ec">
+<title>Pink Rocket · 3D 피어싱 뷰어</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./viewer.css">
+<script type="importmap">{"imports":{"three":"./assets/vendor/three/build/three.module.js","three/addons/":"./assets/vendor/three/addons/"}}</script>
 </head>
 <body>
-<div class="app">
-<aside class="side">
-<h1>3D 피어싱 착용 스케치</h1>
-<div class="desc">아이디어 스케치용 V3<br>외부 라이브러리 없이 바로 실행됩니다.</div>
-<h3>① 피어싱 선택</h3>
-<button class="product active" data-product="spark">✦ 듀오 스파크 링</button>
-<button class="product" data-product="mini">○ 미니 원터치 링</button>
-<button class="product" data-product="cubic">◇ 큐빅 링</button>
-<button class="product" data-product="pearl">● 진주 링</button>
-<h3>② 착용 위치</h3>
-<button class="place active" data-place="lobe">귓볼</button>
-<button class="place" data-place="inner">이너컨츠</button>
-<button class="place" data-place="helix">귓바퀴 / 헬릭스</button>
-<button class="place" data-place="tragus">트라거스</button>
-<h3>현재 선택</h3>
-<div id="status" style="font-size:13px;line-height:1.7">듀오 스파크 링<br>귓볼</div>
-</aside>
-<section class="viewer">
-<div class="badge">PINK ROCKET · 3D TRY-ON</div>
-<canvas id="stage"></canvas>
-<div class="hint">마우스 드래그: 회전　·　휠: 확대/축소</div>
+<main class="app">
+<aside class="controls" aria-label="피어싱 착용 설정">
+<header class="brand"><span>PINK ROCKET</span><small>3D TRY-ON</small></header>
+<section class="control-section">
+<h2>01 <span>귀 모델</span></h2>
+<div class="ear-list" id="earList"><button class="ear-card active" data-ear="ear-01" aria-pressed="true"><span class="ear-preview">◖</span><span><b>귀 모델 01</b><small>기본 미리보기</small></span></button></div>
 </section>
+<section class="control-section">
+<h2>02 <span>착용 위치</span></h2>
+<div class="chips" id="placeList">
+<button data-place="lobe" class="active" aria-pressed="true">귓볼</button>
+<button data-place="helix" aria-pressed="false">헬릭스</button>
+<button data-place="conch" aria-pressed="false">이너컨츠</button>
+<button data-place="tragus" aria-pressed="false">트라거스</button>
 </div>
-
-<script>
-(function(){
-var canvas=document.getElementById("stage");
-var ctx=canvas.getContext("2d");
-var product="spark", place="lobe";
-var angle=0, zoom=1, down=false, lastX=0;
-
-var productName={
- spark:"듀오 스파크 링", mini:"미니 원터치 링",
- cubic:"큐빅 링", pearl:"진주 링"
-};
-var placeName={
- lobe:"귓볼", inner:"이너컨츠", helix:"귓바퀴 / 헬릭스", tragus:"트라거스"
-};
-
-function resize(){
- var r=canvas.getBoundingClientRect();
- var d=Math.min(window.devicePixelRatio||1,2);
- canvas.width=Math.max(1,Math.floor(r.width*d));
- canvas.height=Math.max(1,Math.floor(r.height*d));
- ctx.setTransform(d,0,0,d,0,0);
- draw();
-}
-
-function project(x,y,z){
- var ca=Math.cos(angle), sa=Math.sin(angle);
- var X=x*ca-z*sa;
- var Z=x*sa+z*ca;
- var scale=115*zoom/(1+Z*0.035);
- return {
-   x:canvas.clientWidth/2+X*scale,
-   y:canvas.clientHeight/2-y*scale,
-   s:scale
- };
-}
-
-function oval(x,y,z,rx,ry,fill,stroke){
- var p=project(x,y,z);
- ctx.beginPath();
- ctx.ellipse(p.x,p.y,Math.abs(rx*p.s),Math.abs(ry*p.s),0,0,Math.PI*2);
- ctx.fillStyle=fill; ctx.fill();
- if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}
-}
-
-function ring(x,y,z,r,t){
- var p=project(x,y,z);
- ctx.beginPath();
- ctx.ellipse(p.x,p.y,r*p.s,r*p.s*0.84,0,0,Math.PI*2);
- ctx.strokeStyle="#c69a35";ctx.lineWidth=Math.max(4,t*p.s);ctx.stroke();
-}
-
-function diamond(x,y,z,r){
- var p=project(x,y,z), R=r*p.s;
- ctx.beginPath();
- ctx.moveTo(p.x,p.y-R);ctx.lineTo(p.x+R,p.y);
- ctx.lineTo(p.x,p.y+R);ctx.lineTo(p.x-R,p.y);ctx.closePath();
- ctx.fillStyle="#f2d875";ctx.fill();
-}
-
-function drawEar(){
- /* 귀 뒤쪽 */
- oval(0,0,-.15,2.05,2.7,"#ad705d");
- /* 귀 외곽 */
- oval(-.12,0,.2,1.95,2.58,"#d99a7b");
- /* 귓바퀴 안쪽 */
- oval(.12,.05,.65,1.38,1.82,"#bb7763");
- oval(.22,.05,.88,1.03,1.42,"#d99a7b");
- /* 귓구멍/안쪽 */
- oval(.30,.05,1.02,.56,.80,"#a96657");
- oval(.30,.05,1.15,.40,.58,"#c9866d");
- /* 귓볼 */
- oval(-.17,-1.78,.45,.78,.92,"#d99a7b");
- /* 하이라이트 */
- oval(-.72,.95,.72,.16,.48,"#e7b29a");
-}
-
-function drawPiercing(){
- var a={
-  lobe:[-.17,-1.78,1.28],
-  inner:[.34,-.03,1.32],
-  helix:[-1.22,.93,1.02],
-  tragus:[.70,-.39,1.35]
- }[place];
-
- var scale=1;
- if(place==="helix")scale=.86;
- if(place==="tragus")scale=.68;
-
- ring(a[0],a[1],a[2],.47*scale,.085);
-
- if(product==="spark"){
-   diamond(a[0]-.30*scale,a[1]+.31*scale,a[2]+.03,.12*scale);
-   diamond(a[0]+.30*scale,a[1]-.31*scale,a[2]+.03,.10*scale);
- }else if(product==="cubic"){
-   for(var i=0;i<6;i++){
-     var q=i*Math.PI/3;
-     diamond(a[0]+Math.cos(q)*.39*scale,a[1]+Math.sin(q)*.39*scale,a[2]+.04,.052*scale);
-   }
- }else if(product==="pearl"){
-   oval(a[0]+.33*scale,a[1],a[2]+.08,.14*scale,.14*scale,"#f0e9dd","#c9c0b1");
- }
-}
-
-function draw(){
- var w=canvas.clientWidth,h=canvas.clientHeight;
- ctx.clearRect(0,0,w,h);
- ctx.fillStyle="#f3efeb";ctx.fillRect(0,0,w,h);
-
- /* 바닥 그림자 */
- ctx.globalAlpha=.12; oval(0,-2.95,-.1,2.0,.28,"#555"); ctx.globalAlpha=1;
-
- drawEar();
- drawPiercing();
-
- /* 회전 방향 표시 */
- ctx.fillStyle="#777";ctx.font="12px Arial";
- ctx.textAlign="center";
- ctx.fillText("3D VIEW",w/2,h/2+330);
-}
-
-canvas.addEventListener("mousedown",function(e){down=true;lastX=e.clientX;});
-window.addEventListener("mouseup",function(){down=false;});
-window.addEventListener("mousemove",function(e){
- if(!down)return;
- angle+=(e.clientX-lastX)*.012;
- lastX=e.clientX;draw();
-});
-canvas.addEventListener("wheel",function(e){
- e.preventDefault();
- zoom*=e.deltaY<0?1.08:.93;
- zoom=Math.max(.65,Math.min(1.65,zoom));
- draw();
-},{passive:false});
-
-document.querySelectorAll(".product").forEach(function(b){
- b.addEventListener("click",function(){
-  document.querySelectorAll(".product").forEach(function(x){x.classList.remove("active")});
-  b.classList.add("active");product=b.getAttribute("data-product");
-  updateStatus();draw();
- });
-});
-document.querySelectorAll(".place").forEach(function(b){
- b.addEventListener("click",function(){
-  document.querySelectorAll(".place").forEach(function(x){x.classList.remove("active")});
-  b.classList.add("active");place=b.getAttribute("data-place");
-  updateStatus();draw();
- });
-});
-function updateStatus(){
- document.getElementById("status").innerHTML="<b>"+productName[product]+"</b><br>"+placeName[place];
-}
-window.addEventListener("resize",resize);
-resize();
-})();
-</script>
+</section>
+<section class="control-section">
+<h2>03 <span>각도 / 보기</span></h2>
+<div class="view-actions"><button id="frontView">정면</button><button id="resetView">보기 초기화</button></div>
+</section>
+<footer class="selection"><span id="productName">듀오 스파크 링</span><span id="selectionText" aria-live="polite">귀 모델 01 · 귓볼</span></footer>
+<details class="demo-products"><summary>테스트 피어싱 변경</summary><select id="productSelect" aria-label="테스트 피어싱"><option value="spark">듀오 스파크 링</option><option value="mini">미니 원터치 링</option><option value="cubic">큐빅 링</option><option value="pearl">진주 링</option></select></details>
+</aside>
+<section class="viewport" id="viewport" aria-label="3D 귀와 피어싱 미리보기">
+<canvas id="stage" aria-label="드래그로 회전하고 휠 또는 두 손가락으로 확대하는 3D 뷰어"></canvas>
+<div class="viewport-label">PINK ROCKET <span>· TRY-ON</span></div>
+<div class="loading" id="loading" role="status">뷰어 준비 중…</div>
+<div class="fallback" id="fallback" role="alert" hidden><p id="errorMessage">3D 뷰어를 불러오지 못했습니다.</p><button id="retry">다시 시도</button></div>
+<p class="hint">드래그하여 회전 <span>·</span> 휠 / 두 손가락으로 확대</p>
+<div class="notice" id="notice" role="status" hidden></div>
+</section>
+</main>
+<script type="module" src="./viewer.js"></script>
+<script>window.addEventListener('error',function(e){if(e.target.tagName==='SCRIPT'){document.getElementById('loading').hidden=true;document.getElementById('fallback').hidden=false;document.getElementById('errorMessage').textContent='뷰어 파일을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.'}},true);document.getElementById('retry').onclick=function(){location.reload()};</script>
 </body>
 </html>

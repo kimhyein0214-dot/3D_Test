@@ -1,0 +1,56 @@
+:root{color-scheme:light;--ink:#292725;--muted:#817c76;--line:#e2ddd7;--warm:#f3f0ec;--gold:#a48149}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-width:0;background:var(--warm);color:var(--ink);font-family:Arial,"Malgun Gothic",sans-serif}
+body{overflow-x:clip}
+button,select{font:inherit;color:inherit}
+button{min-height:42px;border:1px solid var(--line);background:#fff;border-radius:5px;cursor:pointer;transition:border-color .15s,background .15s}
+button:hover{border-color:#a69b8f}
+button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+button.active{border-color:#393530;background:#f1eeea}
+button:disabled{cursor:wait;opacity:.55}
+.app{display:grid;grid-template-columns:290px minmax(0,1fr);grid-template-areas:"controls viewport";width:100%;max-width:1180px;height:720px;max-height:100svh;min-height:540px;margin:auto;background:#fff}
+.controls{grid-area:controls;min-width:0;padding:26px 22px;border-right:1px solid var(--line);overflow-y:auto}
+.brand{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:1.4px;margin-bottom:32px}
+.brand small{font-size:9px;font-weight:400;color:var(--muted);letter-spacing:1px}
+.control-section{margin-bottom:26px}
+h2{margin:0 0 12px;color:var(--muted);font-size:10px;font-weight:400;letter-spacing:.5px}
+h2 span{color:var(--ink);font-size:12px;font-weight:700;margin-left:8px}
+.ear-list{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 4px;scrollbar-width:thin}
+.ear-card{display:flex;align-items:center;gap:10px;flex:0 0 100%;min-width:0;text-align:left;padding:8px;height:76px}
+.ear-preview,.ear-card img{width:46px;height:58px;object-fit:contain;flex:none;background:#e9e4de;font-size:42px;line-height:58px;text-align:center;border-radius:3px;color:#c29b87}
+.ear-card b{display:block;font-size:12px;font-weight:600}
+.ear-card small{display:block;color:var(--muted);font-size:10px;margin-top:5px;line-height:1.4}
+.chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.chips button,.view-actions button{font-size:12px;padding:8px 6px}
+.view-actions{display:grid;grid-template-columns:1fr 1.4fr;gap:7px}
+.selection{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:16px;font-size:12px}
+.selection span:last-child{color:var(--muted);font-size:11px}
+.demo-products{font-size:10px;margin-top:18px;color:var(--muted)}
+.demo-products summary{cursor:pointer;padding:5px 0}
+.demo-products select{width:100%;min-height:42px;margin-top:6px;border:1px solid var(--line);background:#fff;border-radius:4px;padding:8px;font-size:12px}
+.viewport{grid-area:viewport;position:relative;min-width:0;min-height:0;background:var(--warm);overflow:hidden}
+#stage{display:block;width:100%;height:100%;touch-action:none}
+.viewport-label{position:absolute;left:20px;top:19px;font-size:10px;letter-spacing:1.3px;pointer-events:none;color:#4e4740}
+.viewport-label span{color:var(--muted)}
+.hint{position:absolute;bottom:15px;left:0;right:0;text-align:center;font-size:10px;color:#6a625b;margin:0;pointer-events:none}
+.hint span{padding:0 6px}
+.loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#70675f;background:#f3f0ecaa;pointer-events:none}
+[hidden]{display:none!important}
+.fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--warm);padding:28px;text-align:center;font-size:13px;line-height:1.7}
+.fallback button{padding:8px 24px}
+.notice{position:absolute;left:12px;right:12px;top:44px;text-align:center;padding:8px;background:#ffffffde;color:#78634a;font-size:10px}
+@media(min-width:769px){.ear-list{flex-direction:column;overflow:visible}.ear-card{flex-basis:auto;width:100%}}
+@media(max-width:768px){
+ .app{grid-template-columns:minmax(0,1fr);grid-template-areas:"viewport" "controls";height:auto;max-height:none;min-height:100svh;align-content:start}
+ .viewport{height:clamp(430px,55svh,540px)}
+ .controls{padding:8px 14px 6px;border-right:0;border-top:1px solid var(--line);overflow:visible}
+ .brand{display:none}
+ .control-section{margin-bottom:6px}h2{margin-bottom:4px}h2 span{font-size:11px}
+ .ear-card{flex-basis:calc((100% - 16px)/3);gap:6px;height:60px;padding:4px;min-width:104px}.ear-preview,.ear-card img{width:30px;height:46px;font-size:30px;line-height:46px}
+ .ear-card b{font-size:10px}.ear-card small{font-size:8px;margin-top:3px}
+ .chips{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.chips button,.view-actions button{font-size:11px}
+ .selection{flex-direction:row;align-items:center;justify-content:space-between;padding-top:9px;gap:8px;font-size:10px}.selection span:last-child{font-size:9px}
+ .demo-products{margin-top:7px}.demo-products summary{padding:3px 0}
+ .viewport-label{left:14px;top:15px;font-size:9px}.hint{font-size:9px;bottom:12px}
+}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
